@@ -9,7 +9,7 @@ Este documento detalha cada expressão regular utilizada no Reconhecedor de List
 ### Expressão
 
 ```ruby
-REGEX_HORARIO = /
+RegexHorario = /
   (?:
     (?:às?)\s+(2[0-3]|[01]?\d)\b(?::([0-5]\d)|\s+([0-5]\d)\b|\s+horas?\b)?
     |
@@ -49,14 +49,14 @@ O padrão é dividido em duas alternâncias:
 ### Expressão
 
 ```ruby
-REGEX_DATA = /
+RegexData = /
   \b
   (?:
-    (\d{1,2})(?:\s+de)?\s+(janeiro|fevereiro|março|...)(?:\s+(?:de\s+)?(\d{4}))?
+    (?<diaExt>\d{1,2})(?:\s+de)?\s+(?<mesExt>#{MesesRegex})(?:\s+(?:de\s+)?(?<anoExt>\d{4}))?
     |
-    (\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?
+    (?<dia>\d{1,2})\/(?<mes>\d{1,2})(?:\/(?<ano>\d{2,4}))?
     |
-    (depois\s+de\s+amanh[aã]|amanh[aã]|hoje)
+    (?<relativo>depois\s+de\s+amanh[a\u00e3]|amanh[a\u00e3]|hoje)
   )
   \b
 /xi
@@ -95,7 +95,7 @@ Três alternâncias independentes:
 ### Expressão
 
 ```ruby
-REGEX_TAG = /#[a-z\u00e0-\u00ff0-9_-]+/i
+RegexTag = /#[a-z\u00e0-\u00ff0-9_-]+/i
 ```
 
 ### Casos Cobertos
@@ -119,7 +119,7 @@ REGEX_TAG = /#[a-z\u00e0-\u00ff0-9_-]+/i
 ### Expressão
 
 ```ruby
-REGEX_URL = %r{https?://[^\s/$.?#][^\s]*}i
+RegexURL = %r{https?://[^\s/$.?#][^\s]*}i
 ```
 
 ### Casos Cobertos
@@ -142,7 +142,7 @@ REGEX_URL = %r{https?://[^\s/$.?#][^\s]*}i
 ### Expressão
 
 ```ruby
-REGEX_EMAIL = /\b[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}\b/i
+RegexEmail = /\b[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}\b/i
 ```
 
 ### Casos Cobertos
@@ -166,7 +166,7 @@ REGEX_EMAIL = /\b[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}\b/i
 ### Expressão
 
 ```ruby
-REGEX_ACAO = /\b(agendar|marcar|ligar|reunião|reunir|lembrar|enviar|...)\b/i
+RegexAcao = /\b(agendar|marcar|ligar|reuni[a\u00e3]o|reunir|lembrar|enviar|mandar|comprar|pagar|revisar|estudar|entregar|fazer|criar|confirmar|cancelar|adiar|checar|verificar)\b/i
 ```
 
 ### Casos Cobertos
@@ -187,7 +187,7 @@ Verbos reconhecidos: `agendar`, `marcar`, `ligar`, `reunião`, `reunir`, `lembra
 ### Expressão
 
 ```ruby
-REGEX_PESSOA = /\b(?:com|para)\s+([A-Z\u00c0-\u00dc][a-z\u00e0-\u00fc]+(?:\s+e\s+[A-Z\u00c0-\u00dc][a-z\u00e0-\u00fc]+)*)/
+RegexPessoa = /\b(?:com|para)\s+(?:o|a)?\s*((?:[A-Z\u00c0-\u00dc][a-z\u00e0-\u00fc]+(?:\s+|$))+)/u
 ```
 
 ### Casos Cobertos
