@@ -1,0 +1,1 @@
+# Reconhecedor-Lista-Afazeres
