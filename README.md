@@ -12,11 +12,9 @@ Aplicativos como Todoist e Remember The Milk permitem que o usuário escreva tar
 # Execução interativa
 ruby main.rb
 
-# Testes automatizados
-ruby test/test_reconhecedor.rb
 ```
 
-Dentro do programa, digite `ajuda` para ver exemplos ou `sair` para encerrar.
+Dentro do programa, digite `sair` para encerrar.
 
 ## Exemplo
 
@@ -41,11 +39,9 @@ Tag       : #trabalho
 ```
 reconhecedor/
 ├── main.rb                  # Ponto de entrada (loop interativo)
-├── lib/
+├── src/
 │   ├── reconhecedor.rb      # Módulo com todas as expressões regulares e extratores
 │   └── formatador.rb        # Módulo de exibição estruturada
-├── test/
-│   └── test_reconhecedor.rb # Suite de testes (41 casos)
 └── docs/
     └── modelagem.md         # Documentação detalhada das expressões regulares
 ```
