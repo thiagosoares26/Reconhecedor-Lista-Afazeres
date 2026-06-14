@@ -86,6 +86,8 @@ Três alternâncias independentes:
 
 **Classe de caracteres do ã**: `[aã]` ou `[a\u00e3]` — garante que tanto "amanha" (digitação sem acento) quanto "amanhã" sejam reconhecidos.
 
+**`MesesRegex` com variante sem cedilha**: a lista inclui tanto `março` quanto `marco`, cobrindo digitações sem acento. O `gsub` de normalização no extrator converte ambas as formas antes de buscar o índice no array.
+
 **Remoção prévia de URLs**: antes de aplicar o regex de datas, URLs são removidas para evitar que barras em paths como `https://site.com/30/01` sejam interpretadas como datas.
 
 ---
@@ -197,14 +199,18 @@ RegexPessoa = /\b(?:com|para)\s+(?:o|a)?\s*((?:[A-Z\u00c0-\u00dc][a-z\u00e0-\u00
 | `com José` | `["José"]` |
 | `com Pedro e João` | `["Pedro", "João"]` |
 | `para Maria` | `["Maria"]` |
+| `com o Carlos` | `["Carlos"]` |
+| `para a Ana` | `["Ana"]` |
 
 ### Justificativa
 
 - `(?:com|para)` — conectores que introduzem pessoas em linguagem natural de tarefas.
-- `[A-Z\u00c0-\u00dc]` — primeira letra maiúscula, incluindo letras acentuadas maiúsculas (Á, É, Ó etc.).
+- `(?:o|a)?\s*` — artigo definido opcional antes do nome ("com o Pedro", "para a Maria"), ignorado via grupo não-capturante.
+- `[A-Z\u00c0-\u00dc]` — primeira letra maiúscula, incluindo letras acentuadas maiúsculas (Á, É, Ó etc.). Funciona como âncora semântica: nomes próprios começam com maiúscula.
 - `[a-z\u00e0-\u00fc]+` — restante do nome em minúsculas, incluindo letras acentuadas.
-- `(?:\s+e\s+...)*` — captura múltiplas pessoas separadas por " e ".
-- Após o `scan`, o grupo capturado é dividido em `split(/\s+e\s+/)` para separar os nomes individuais no array de saída.
+- `(?:\s+|$)+` — após cada palavra do nome, aceita um espaço (continuação) ou fim de string, permitindo capturar nomes compostos em sequência como "Pedro Paulo".
+- Flag `/u` — modo Unicode, necessário para que as classes de caracteres com codepoints (`\u00c0`–`\u00fc`) funcionem corretamente.
+- Múltiplas pessoas ("com Pedro e João") são capturadas como uma string única pelo `scan`; o `split(/\s+e\s+/i)` posterior as separa no array de saída.
 
 ---
 
@@ -212,7 +218,7 @@ RegexPessoa = /\b(?:com|para)\s+(?:o|a)?\s*((?:[A-Z\u00c0-\u00dc][a-z\u00e0-\u00
 
 ### Por que não usar bibliotecas de data?
 
-O enunciado proíbe gems ou bibliotecas que reconheçam datas. Todo o parsing é feito manualmente: o mês por extenso é convertido em número via `Array#index` sobre a lista `MESES`, e datas relativas são calculadas com aritmética sobre `Date.today`.
+O enunciado proíbe gems ou bibliotecas que reconheçam datas. Todo o parsing é feito manualmente: o mês por extenso é normalizado (remoção de cedilha via `gsub`) e convertido em número via `Array#index` sobre a lista `MesesRegex`, e datas relativas são calculadas com aritmética sobre `Date.today`.
 
 ### Flags utilizadas
 
